@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:hsqldb:mem:blog
+    username: sa
+    password:
+    schema: classpath:/schema.sql

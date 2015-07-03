@@ -1,0 +1,15 @@
+Iteration 0. Infrastructure
+a. Download and install Java 8, Eclipse, Gradle
+b. Clone an existing project as an template to start
+   https://github.com/spring-guides/gs-serving-web-content.git
+c. Customize the existing project
+d. Initial checkin of the project
+
+Iteration 1. DAO layer
+a. Configure HSQLDB as in-memory database
+b. Create DB schema
+c. Create DAO layer
+d. Test the DAO layer
+
+Iteration 2. Service layer
+a. Add a service to process files.
