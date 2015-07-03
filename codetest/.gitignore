@@ -4,3 +4,6 @@
 /gradle/
 /.classpath
 /.project
+/bin/
+/classes/
+/codetest.log
