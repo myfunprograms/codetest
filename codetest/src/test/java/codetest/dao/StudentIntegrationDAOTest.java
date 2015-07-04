@@ -21,7 +21,7 @@ import codetest.domain.Student;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @Transactional
-public class StudentDAOTest {
+public class StudentIntegrationDAOTest {
 	@Autowired
 	private StudentDAO studentDAO;
 

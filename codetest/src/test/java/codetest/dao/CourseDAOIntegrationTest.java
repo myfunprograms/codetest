@@ -1,7 +1,7 @@
 package codetest.dao;
 
 import static org.junit.Assert.assertEquals;
-
+  
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import codetest.domain.Student;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @Transactional
-public class CourseDAOTest {
+public class CourseDAOIntegrationTest {
 	
 	@Autowired
 	private CourseDAO courseDAO;

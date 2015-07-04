@@ -1,19 +1,32 @@
 package codetest.domain;
+
+import java.util.Arrays;
+import java.util.List;
+
 /** DTO of student table */
-public class Student {
+public class Student implements DomainObject {
 	private Long userId;
 	private Long courseId;
 	private String userName;
 	private StateCode state;
 
+	public final static List<String> METADATA = 
+			Arrays.asList(new String[]{"user_id", "course_id", "user_name", "state"});
+
 	public Student(Long userId, Long courseId, String userName, StateCode state) {
-		super();
 		this.userId = userId;
 		this.courseId = courseId;
 		this.userName = userName;
 		this.state = state;
 	}
 
+	public Student(String[] fields, Integer[] seqs) {
+		this.userId = Long.valueOf(fields[seqs[0]].trim());
+		this.courseId = Long.valueOf(fields[seqs[1]].trim());
+		this.userName = fields[seqs[2]].trim();
+		this.state = StateCode.getByCode(fields[seqs[3]].trim());
+	}
+	
 	public Long getUserId() {
 		return userId;
 	}

@@ -1,17 +1,29 @@
 package codetest.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 /** DTO of course table */
-public class Course {
+public class Course implements DomainObject {
     private Long courseId;
 	private String courseName;
 	private StateCode state;
 	
+	public final static List<String> METADATA = 
+			Arrays.<String>asList(new String[]{"course_id", "course_name", "state"});
+
 	public Course(Long courseId, String courseName, StateCode state) {
 		this.courseId = courseId;
 		this.courseName = courseName;
 		this.state = state;
 	}
 
+	public Course(String[] fields, Integer[] seqs) {
+		this.courseId = Long.valueOf(fields[seqs[0]].trim());
+		this.courseName = fields[seqs[1]].trim();
+		this.state = StateCode.getByCode(fields[seqs[2]].trim());
+	}
+	
 	public Long getCourseId() {
 		return courseId;
 	}
@@ -24,11 +36,6 @@ public class Course {
 		return state;
 	}
 	
-	public String getStateCode() {
-		return getState().getCode();
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -40,7 +47,7 @@ public class Course {
 
 	@Override
 	public String toString() {
-		return "Course [courseId=" + courseId + ", courseName=" + courseName + ", state=" + getStateCode() + "]";
+		return "Course [courseId=" + courseId + ", courseName=" + courseName + ", state=" + getState().getCode() + "]";
 	}
 
 	@Override

@@ -1,0 +1,6 @@
+user_id, course_id, user_name, state
+100, 11, User 100, inactive
+100, 11, User 100, active
+100, 12, User 100, active
+101, 11, User 101, active
+101, 12, User 101, active

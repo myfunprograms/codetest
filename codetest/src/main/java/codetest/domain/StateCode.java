@@ -2,8 +2,8 @@
 package codetest.domain;
 
 public enum StateCode {
-	ACTIVE("Active"),
-	INACTIVE("Inactive");
+	ACTIVE("active"),
+	INACTIVE("inactive");
 	
 	private String code;
 	
@@ -17,7 +17,7 @@ public enum StateCode {
 	
 	public static StateCode getByCode(String code) {
 		for (StateCode v : values()) {
-			if (v.getCode().equals(code))
+			if (v.getCode().equalsIgnoreCase(code))
 				return v;
 		}
 	
