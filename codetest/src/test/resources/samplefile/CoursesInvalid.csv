@@ -1,0 +1,6 @@
+user_id, user_name, state
+100, User 100, inactive
+100, User 100, active
+100, User 100, active
+101, User 101, active
+101, User 101, active
