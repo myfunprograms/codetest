@@ -81,7 +81,7 @@ public class CourseDAOIntegrationTest {
 		List<Object[]> persisted = courseDAO.findAllActiveCourses();
 		assertEquals(1, persisted.size());
 		
-		assertEquals(course.getCourseId(), persisted.get(0)[0]);
+		assertEquals(String.valueOf(course.getCourseId()), persisted.get(0)[0]);
 	}
 	
 	@Test
@@ -104,10 +104,10 @@ public class CourseDAOIntegrationTest {
 		List<Object[]> persisted = courseDAO.findAllActiveCourses();
 		assertEquals(2, persisted.size());
 		
-		assertEquals(course.getCourseId(), persisted.get(0)[0]);
-		assertEquals(course.getCourseId(), persisted.get(1)[0]);
-		assertEquals(student1.getUserId(), persisted.get(0)[2]);
-		assertEquals(student2.getUserId(), persisted.get(1)[2]);
+		assertEquals(String.valueOf(course.getCourseId()), persisted.get(0)[0]);
+		assertEquals(String.valueOf(course.getCourseId()), persisted.get(1)[0]);
+		assertEquals(String.valueOf(student1.getUserId()), persisted.get(0)[2]);
+		assertEquals(String.valueOf(student2.getUserId()), persisted.get(1)[2]);
 	}
 	
 	@Test

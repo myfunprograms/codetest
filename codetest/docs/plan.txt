@@ -13,3 +13,14 @@ d. Test the DAO layer
 
 Iteration 2. Service layer
 a. Add a service to process files.
+b. Add a service to do DAO operations in transaction.
+c. Test the service layer
+
+Iteration 3. Presentation layer
+a. Add a controller to read CSV
+b. Add method to display result
+c. Test the controller
+
+Iteration 4. Presentation layer
+a. Implement the page
+b. Test the page

@@ -10,6 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codetest.domain.CannotReadFileRuntimeException;
 import codetest.domain.DomainObject;
 
 /** A super class that implements the interface method to process a file */
@@ -49,12 +50,12 @@ public abstract class AbstractProcessRecordService<T extends DomainObject> imple
 	
 	protected Integer[] processHeader(String firstLine, List<String> metadata) {
 		if (firstLine == null || firstLine.isEmpty())
-			throw new RuntimeException();
+			throw new CannotReadFileRuntimeException(CannotReadFileRuntimeException.WRONG_HEADER);
 			
 		String[] fields = firstLine.split(DELIMITOR);
 		
 		if (fields.length != metadata.size()) 
-			throw new RuntimeException();
+			throw new CannotReadFileRuntimeException(CannotReadFileRuntimeException.WRONG_HEADER);
 			
 	    Integer[] columnsSequence = getColumnsSequence(metadata, fields);
 		return columnsSequence;
@@ -63,7 +64,10 @@ public abstract class AbstractProcessRecordService<T extends DomainObject> imple
 	private Integer[] getColumnsSequence(List<String> metadata, String[] fields) {
 		List<Integer> seqs = new ArrayList<Integer>();
 		for (int i = 0; i < fields.length; i++) {
-			seqs.add(metadata.indexOf(fields[i].trim()));
+			int index = metadata.indexOf(fields[i].trim());
+			if (index == -1)
+				throw new CannotReadFileRuntimeException(CannotReadFileRuntimeException.WRONG_HEADER);
+			seqs.add(index);
 		}
 		
 		Integer[] resultSeqs = new Integer[seqs.size()];

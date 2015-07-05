@@ -29,6 +29,7 @@ public class CourseDAOImpl implements CourseDAO {
 			.append("  LEFT OUTER JOIN student s ON c.course_id = s.course_id ")
 			.append("  AND s.state = '").append(StateCode.ACTIVE.getCode()).append("' ")
 			.append("WHERE c.state = '").append(StateCode.ACTIVE.getCode()).append("' ")
+			.append("ORDER BY course_id, user_id ")
 			.toString();
 	
 	private String CREATE = new StringBuffer()
@@ -105,8 +106,10 @@ public class CourseDAOImpl implements CourseDAO {
 				.query(QUERY, new RowMapper<Object[]>() {
 			        public Object[] mapRow(ResultSet rs, int rowNum) throws SQLException {
 			            Object[] result = new Object[]{
-			            		rs.getLong("course_id"), rs.getString("course_name"), 
-			            		rs.getLong("user_id"), rs.getString("user_name")};
+			            		String.valueOf(rs.getLong("course_id")), 
+			            		rs.getString("course_name"), 
+			            		rs.getLong("user_id") == 0L ? "" : String.valueOf(rs.getLong("user_id")), 
+			            		rs.getString("user_name") == null ? "" : rs.getString("user_name")};
 			            return result;
 			        }
 			    });

@@ -28,6 +28,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework:spring-tx")
     compile("org.hsqldb:hsqldb:2.3.1")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

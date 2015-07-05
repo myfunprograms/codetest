@@ -29,8 +29,8 @@ public class ProcessCourseServiceTest {
 		
 		Course[] expected = new Course[]{
 			new Course(11L, "110", StateCode.INACTIVE),	
+			new Course(11L, "110", StateCode.ACTIVE),	
 			new Course(12L, "120", StateCode.ACTIVE),	
-			new Course(13L, "130", StateCode.ACTIVE),	
 		};
 		assertArrayEquals(expected, result.toArray());
 	}
@@ -44,8 +44,8 @@ public class ProcessCourseServiceTest {
 
 		Course[] expected = new Course[]{
 				new Course(31L, "310", StateCode.INACTIVE),	
+				new Course(31L, "310", StateCode.ACTIVE),	
 				new Course(32L, "320", StateCode.ACTIVE),	
-				new Course(33L, "330", StateCode.ACTIVE),	
 			};
 		assertArrayEquals(expected, result.toArray());
 }
