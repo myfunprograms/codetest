@@ -3,6 +3,7 @@ package codetest.web;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -33,6 +34,7 @@ import codetest.domain.CannotReadFileRuntimeException;
 import codetest.domain.StateCode;
 import codetest.domain.Student;
 
+/** Integration test that tests the controller */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -51,21 +53,22 @@ public class ProcessFileControllerIntegrationTest {
 
     //////////////////////////////////////////////
     // Test navigation
-    // TODO: verify message
 	@Test
 	public void getHome() throws Exception {
-		mvc.perform(get("/")
+		mvc.perform(get(ProcessFileController.PATH)
 						.accept(MediaType.TEXT_HTML))
-						.andExpect(status()
-						.isOk());
+						.andExpect(status().isOk())
+		                .andExpect(view().name(ProcessFileController.HOME_PAGE))
+						.andExpect(status().is(200));
 	}
 	
 	@Test
 	public void getResults() throws Exception {
-		mvc.perform(get("/viewResults")
-				.accept(MediaType.TEXT_HTML))
+		mvc.perform(post(ProcessFileController.PATH)
+				.accept(MediaType.TEXT_HTML)
+				.param(ProcessFileController.VIEW_RESULT, ""))
 				.andExpect(status().isOk())
-				.andExpect(view().name("index"))
+				.andExpect(view().name(ProcessFileController.HOME_PAGE))
 				.andExpect(model().attribute(ProcessFileController.QUERY_RESULT, hasSize(0)));
 	}
 
@@ -73,16 +76,16 @@ public class ProcessFileControllerIntegrationTest {
 	public void uploadCoursesWithEmptyFile() throws Exception {
 	    File file = new ClassPathResource("samplefile/Empty.csv").getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile courseFile = new MockMultipartFile("file", 
+		MockMultipartFile courseFile = new MockMultipartFile("courseFile", 
 				"samplefile/Empty.csv", 
 				"text/csv", 
 				inputStream);
-  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.UPLOAD_COURSES_PATH)
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.PATH)
 		                .file(courseFile)
 		                .param(ProcessFileController.UPLOAD_COURSES, "")
 		                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(view().name("index"))
-				.andExpect(status().is(200))
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
+				.andExpect(status().isOk())
   				.andExpect(model().attribute(ProcessFileController.MESSAGE, ProcessFileController.MSG_EMPTY_FILE));
 	}
 
@@ -90,15 +93,15 @@ public class ProcessFileControllerIntegrationTest {
 	public void uploadCourses() throws Exception {
 	    File file = new ClassPathResource("samplefile/CourseInOrderActive.csv").getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile courseFile = new MockMultipartFile("file", 
+		MockMultipartFile courseFile = new MockMultipartFile("courseFile", 
 				"samplefile/CourseInOrderActive.csv", 
 				"text/csv", 
 				inputStream);
-  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.UPLOAD_COURSES_PATH)
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.PATH)
 		                .file(courseFile)
 		                .param(ProcessFileController.UPLOAD_COURSES, "")
 		                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(view().name("index"))
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
 				.andExpect(status().is(200));
 	}
 	
@@ -107,15 +110,15 @@ public class ProcessFileControllerIntegrationTest {
 	public void uploadCoursesWithInvalidFileHeader() throws Exception {
 	    File file = new ClassPathResource("samplefile/CoursesInvalid.csv").getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile courseFile = new MockMultipartFile("file", 
+		MockMultipartFile courseFile = new MockMultipartFile("courseFile", 
 				"samplefile/CoursesInvalid.csv", 
 				"text/csv", 
 				inputStream);
-  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.UPLOAD_COURSES_PATH)
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.PATH)
 		                .file(courseFile)
 		                .param(ProcessFileController.UPLOAD_COURSES, "")
 		                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(view().name("index"))
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
 				.andExpect(status().is(200))
   				.andExpect(model().attribute(ProcessFileController.MESSAGE, CannotReadFileRuntimeException.WRONG_HEADER));
 	}
@@ -124,15 +127,15 @@ public class ProcessFileControllerIntegrationTest {
 	public void uploadCoursesWithNoFileHeader() throws Exception {
 	    File file = new ClassPathResource("samplefile/CoursesNoHeader.csv").getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile courseFile = new MockMultipartFile("file", 
+		MockMultipartFile courseFile = new MockMultipartFile("courseFile", 
 				"samplefile/CoursesNoHeader.csv", 
 				"text/csv", 
 				inputStream);
-  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.UPLOAD_COURSES_PATH)
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.PATH)
 		                .file(courseFile)
 		                .param(ProcessFileController.UPLOAD_COURSES, "")
 		                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(view().name("index"))
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
 				.andExpect(status().is(200))
   				.andExpect(model().attribute(ProcessFileController.MESSAGE, CannotReadFileRuntimeException.WRONG_HEADER));
 	}
@@ -141,7 +144,7 @@ public class ProcessFileControllerIntegrationTest {
 	public void uploadStudents() throws Exception {
 	    File file = new ClassPathResource("samplefile/StudentInOrderActive.csv").getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile studentFile = new MockMultipartFile("file", 
+		MockMultipartFile studentFile = new MockMultipartFile("studentFile", 
 				"samplefile/StudentInOrderActive.csv", 
 				"text/csv", 
 				inputStream);
@@ -154,17 +157,17 @@ public class ProcessFileControllerIntegrationTest {
 			new Student(101L, 12L, "User 101", StateCode.ACTIVE),	
 		};
 		
-  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.UPLOAD_STUDENTS_PATH)
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.PATH)
 		                .file(studentFile)
 		                .param(ProcessFileController.UPLOAD_STUDENTS, "")
 		                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(view().name("index"))
-				.andExpect(status().is(200))
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
+				.andExpect(status().isOk())
   				.andExpect(model().attribute(ProcessFileController.MESSAGE, 
   						String.format(ProcessFileController.MSG_PROCESS_FILE, 5)))
   				.andExpect(model().attribute(ProcessFileController.ERROR_MESSAGE,
   						String.format(ProcessFileController.MSG_PROCESS_FILE_ERROR, expectedError.length)))
-				.andExpect(model().attribute(ProcessFileController.ERROR_RECORDS,
+				.andExpect(model().attribute(ProcessFileController.ERROR_STUDENTS,
 						IsIterableContainingInAnyOrder.<Student>containsInAnyOrder(expectedError)
                  ));
 	}
@@ -174,15 +177,15 @@ public class ProcessFileControllerIntegrationTest {
 	public void uploadStudentsWithInvalidFile() throws Exception {
 	    File file = new ClassPathResource("samplefile/StudentsInvalid.csv").getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile studentFile = new MockMultipartFile("file", 
+		MockMultipartFile studentFile = new MockMultipartFile("studentFile", 
 				"samplefile/StudentsInvalid.csv", 
 				"text/csv", 
 				inputStream);
-  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.UPLOAD_STUDENTS_PATH)
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(ProcessFileController.PATH)
                 .file(studentFile)
                 .param(ProcessFileController.UPLOAD_STUDENTS, "")
                 .contentType(MediaType.MULTIPART_FORM_DATA))
-		        .andExpect(view().name("index"))
+		        .andExpect(view().name(ProcessFileController.HOME_PAGE))
 				.andExpect(status().is(200))
   				.andExpect(model().attribute(ProcessFileController.MESSAGE, CannotReadFileRuntimeException.WRONG_HEADER));
 	}
@@ -220,10 +223,11 @@ public class ProcessFileControllerIntegrationTest {
 	}
 
 	private void verifyUpdateCourseResult(String fileName, Object[] expected) throws Exception {
-		uploadFile(fileName, ProcessFileController.UPLOAD_COURSES_PATH, ProcessFileController.UPLOAD_COURSES);
+		uploadCourseFile(fileName, ProcessFileController.PATH);
   		
-		mvc.perform(get("/viewResults")
-				.accept(MediaType.TEXT_HTML))
+		mvc.perform(post(ProcessFileController.PATH)
+				.accept(MediaType.TEXT_HTML)
+				.param(ProcessFileController.VIEW_RESULT, ""))
 				.andExpect(status().is(200))
 				.andExpect(model().attribute(ProcessFileController.QUERY_RESULT, hasSize(expected.length)))
 				.andExpect(model().attribute(ProcessFileController.QUERY_RESULT,
@@ -286,12 +290,13 @@ public class ProcessFileControllerIntegrationTest {
 	}
 
 	private void verifyUpdateCourseAndStudentResult(String courseFileName, String studentFileName, Object[] expected) throws Exception {
-		uploadFile(courseFileName, ProcessFileController.UPLOAD_COURSES_PATH, ProcessFileController.UPLOAD_COURSES);
-		uploadFile(studentFileName, ProcessFileController.UPLOAD_STUDENTS_PATH, ProcessFileController.UPLOAD_STUDENTS);
+		uploadCourseFile(courseFileName, ProcessFileController.PATH);
+		uploadStudentFile(studentFileName, ProcessFileController.PATH);
   		
-		mvc.perform(get("/viewResults")
-				.accept(MediaType.TEXT_HTML))
-				.andExpect(status().is(200))
+		mvc.perform(post(ProcessFileController.PATH)
+				.accept(MediaType.TEXT_HTML)
+				.param(ProcessFileController.VIEW_RESULT, ""))
+				.andExpect(status().isOk())
 				.andExpect(model().attribute(ProcessFileController.QUERY_RESULT, hasSize(expected.length)))
 				.andExpect(model().attribute(ProcessFileController.QUERY_RESULT,
 						IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(expected)
@@ -300,19 +305,35 @@ public class ProcessFileControllerIntegrationTest {
 						String.format(ProcessFileController.MSG_VIEW_RESULT, expected.length)));	
 	}
 
-	private void uploadFile(String fileName, String requestURL, String param) throws Exception {
+	private void uploadCourseFile(String fileName, String requestURL) throws Exception {
 	    File file = new ClassPathResource(fileName).getFile();
 		FileInputStream inputStream = new FileInputStream(file);
-		MockMultipartFile courseFile = new MockMultipartFile("file", 
+		MockMultipartFile courseFile = new MockMultipartFile("courseFile", 
 				fileName, 
 				"text/csv", 
 				inputStream);
   		mvc.perform(MockMvcRequestBuilders.fileUpload(requestURL)
 		                .file(courseFile)
-		                .param(param, "")
+		                .param(ProcessFileController.UPLOAD_COURSES, "")
 		                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(view().name("index"))
-				.andExpect(status().is(200))
-				.andExpect(model().attribute(ProcessFileController.ERROR_RECORDS, nullValue()));		
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute(ProcessFileController.ERROR_COURSES, nullValue()));		
+  	}
+	
+	private void uploadStudentFile(String fileName, String requestURL) throws Exception {
+	    File file = new ClassPathResource(fileName).getFile();
+		FileInputStream inputStream = new FileInputStream(file);
+		MockMultipartFile studentFile = new MockMultipartFile("studentFile", 
+				fileName, 
+				"text/csv", 
+				inputStream);
+  		mvc.perform(MockMvcRequestBuilders.fileUpload(requestURL)
+		                .file(studentFile)
+		                .param(ProcessFileController.UPLOAD_STUDENTS, "")
+		                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(view().name(ProcessFileController.HOME_PAGE))
+				.andExpect(status().isOk())
+		  		.andExpect(model().attribute(ProcessFileController.ERROR_STUDENTS, nullValue()));		
   	}
 }

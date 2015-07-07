@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head> 
+	    <title>Upload courses and students file</title> 
+	    <link href="../css/bootstrap.min.css"
+	          th:href="@{/css/bootstrap.min.css}"
+	          rel="stylesheet" media="screen" />
+	    <link href="../css/codetest.css"
+	          th:href="@{/css/codetest.css}"
+	          rel="stylesheet" media="screen" />
+	    <link href="../css/codetest.css"
+	          th:href="@{/css/jquery-ui.min.css}"
+	          rel="stylesheet" media="screen" />
+	    <script type="text/javascript" 
+	    	    src="../js/jquery.min.js" 
+	    	    th:src="@{/js/jquery.min.js}"/>
+    </head>
+	<body>
+  		<form th:action="@{/home}" method="post" enctype="multipart/form-data">
+		<div class="container">
+			<div class="page-header text-center">
+		    	<h1><span th:text="#{welcome}" /></h1>
+	    	</div>
+	    	
+			<!-- Button -->
+	  		<div class="row">
+				<!-- Upload course file -->
+			    <div class="col-sm-4">
+					<section id="quick-nav">
+					    <header><h3>Upload Course File</h3></header>
+					    <div class="quick-nav-section">
+							<h4>1. Choose a file</h4>
+							<div class="text-center">
+							    <input type="file" name="courseFile"/>
+							</div>
+							<h4>2. Submit</h4>
+							<div>
+								<button type="submit" name="uploadCourses">Upload Course File</button>
+							</div>	
+					    </div>
+				    </section>
+				</div>    
+
+				<!-- Upload student file -->
+			    <div class="col-sm-4">
+					<section id="quick-nav">
+					    <header><h3>Upload Student File</h3></header>
+					    <div class="quick-nav-section">
+							<h4>1. Choose a file</h4>
+							<div class="text-center">
+							    <input type="file" name="studentFile"/>
+							</div>
+							<h4>2. Submit</h4>
+							<div>
+								<button type="submit" name="uploadStudents">Upload Student File</button>
+							</div>	
+					    </div>
+				    </section>
+				</div>    
+
+				<!-- View result -->
+			    <div class="col-sm-4">
+					<section id="quick-nav">
+					    <header><h3>View Active Courses</h3></header>
+					    <div class="quick-nav-section">
+							<div>&nbsp;</div>
+							<div class="text-center">
+								<button type="submit" name="viewResult">View Active Courses</button>
+							</div>
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+					    </div>
+				    </section>
+			    </div>
+			</div>
+			
+			<!-- Message -->
+	  		<div class="row">
+			    <div class="col-sm-12">
+					<div th:text="${message}" class="message">Message</div>
+				</div>
+			</div>		
+
+		    <div class="errorCourseList" th:unless="${#lists.isEmpty(errorCourses)}">
+		  		<div class="row">
+				    <div class="col-sm-12">
+				        <div th:text="${errorMessage}" class="errorMessage">Error message</div>
+						<table width="60%">
+						    <thead class="ui-widget-header">
+			      				<tr>
+			        				<th th:text="#{courseId}" width="30%">Course ID</th>
+			        				<th th:text="#{courseName}" width="30%">Course Name</th>
+			        				<th th:text="#{state}">Course State</th>
+							    </tr>
+						    </thead>
+					        <tbody class="ui-widget-content">
+		     					<tr th:each="course : ${errorCourses}">
+							        <td th:text="${course.courseId}"/>
+							        <td th:text="${course.courseName}"/>
+							        <td th:text="${course.state.code}"/>
+							    </tr>    
+				            </tbody>
+				        </table>    
+				    </div>
+	  			</div>
+	  		</div>
+	  		
+	  		<!-- Error student records -->
+		    <div class="errorStudentList" th:unless="${#lists.isEmpty(errorStudents)}">
+		  		<div class="row">
+				    <div class="col-sm-12">
+				        <div th:text="${errorMessage}" class="errorMessage" >Error message</div>
+						<table width="60%">
+						    <thead class="ui-widget-header">
+			      				<tr>
+			        				<th th:text="#{studentId}" width="25%">Student ID</th>
+			        				<th th:text="#{courseId}" width="25%">Course ID</th>
+			        				<th th:text="#{studentName}" width="25%">Student Name</th>
+			        				<th th:text="#{state}">Student State</th>
+							    </tr>
+						    </thead>
+					        <tbody class="ui-widget-content">
+		     					<tr th:each="student : ${errorStudents}">
+							        <td th:text="${student.userId}">100</td>
+							        <td th:text="${student.courseId}">11</td>
+							        <td th:text="${student.userName}">user 100</td>
+							        <td th:text="${student.state.code}">active</td>
+							    </tr>    
+				            </tbody>
+				        </table>    
+				    </div>
+	  			</div>
+	  		</div>	
+	  		
+			<!-- Result -->
+		    <div class="resultList" th:unless="${#lists.isEmpty(queryResult)}">
+		  		<div class="row">
+				    <div class="col-sm-12">
+						<table width="60%">
+						    <thead class="ui-widget-header">
+			      				<tr>
+			        				<th th:text="#{courseId}" width="25%">Course ID</th>
+			        				<th th:text="#{courseName}" width="25%">Course Name</th>
+			        				<th th:text="#{studentId}" width="25%">Student ID</th>
+			        				<th th:text="#{studentName}">Student Name</th>
+							    </tr>
+						    </thead>
+					        <tbody class="ui-widget-content">
+		     					<tr th:each="result : ${queryResult}">
+							        <td th:text="${result[0]}">11</td>
+							        <td th:text="${result[1]}">110</td>
+							        <td th:text="${result[2]}">100</td>
+							        <td th:text="${result[3]}">active</td>
+							    </tr>    
+				            </tbody>
+				        </table>    
+			  		</div>	
+			    </div>
+	  		</div>
+	  		
+		</div>  		
+		</form>
+
+		<script>
+			$("button").button();
+		</script>
+	</body>
+</html>

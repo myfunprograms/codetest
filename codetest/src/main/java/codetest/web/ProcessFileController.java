@@ -28,21 +28,22 @@ public class ProcessFileController {
 
 	protected final static String MESSAGE = "message";
 	protected final static String ERROR_MESSAGE = "errorMessage";
-	protected final static String ERROR_RECORDS = "errorRecords";
+	protected final static String ERROR_COURSES = "errorCourses";
+	protected final static String ERROR_STUDENTS = "errorStudents";
 	protected final static String QUERY_RESULT = "queryResult";
 
-	protected final static String UPLOAD_COURSES = "updateCourses";
+	protected final static String HOME_PAGE = "home";
+	protected final static String PATH = "/home";
+	protected final static String UPLOAD_COURSES = "uploadCourses";
 	protected final static String UPLOAD_STUDENTS = "uploadStudents";
-	protected final static String UPLOAD_COURSES_PATH = "/" + UPLOAD_COURSES;
-	protected final static String UPLOAD_STUDENTS_PATH = "/" + UPLOAD_STUDENTS;
+	protected final static String VIEW_RESULT = "viewResult";
 	
 	protected final static String MSG_EMPTY_FILE = "Oops, File is empty!";
 	protected final static String MSG_PROCESS_FILE_FAIlED = "Sorry, fail to upload this file.";
 	protected final static String MSG_PROCESS_FILE = "Upload is successful. The number of the records processed is %d.";
-	protected final static String MSG_PROCESS_FILE_ERROR = "The following %d records are not saved.";
+	protected final static String MSG_PROCESS_FILE_ERROR = "Alert: The following %d records are not saved due to data error.";
 	protected final static String MSG_VIEW_RESULT = "Returns %d records.";
 
-	private final static String HOME_PAGE = "index";
 	
 	@Autowired
 	private ProcessRecordService<Course> courseService;
@@ -53,14 +54,21 @@ public class ProcessFileController {
 	@Autowired
 	private PersistRecordService persistService;
 	
-    @RequestMapping(value="/", method=RequestMethod.GET)
-    public String home() {
+    @RequestMapping(value = PATH, method = RequestMethod.GET)
+    public String home(Model model) {
+    	model.addAttribute(MESSAGE, "");
+        return HOME_PAGE;
+    }
+
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public String error(Model model) {
+    	model.addAttribute(MESSAGE, "Something is wrong. Try it again.");
         return HOME_PAGE;
     }
 
     /** Method to handle uploading a course file */
-    @RequestMapping(value=UPLOAD_COURSES_PATH, method=RequestMethod.POST, params = UPLOAD_COURSES)
-    public String uploadCourses(@RequestParam("file") MultipartFile multipartFile, Model model) {
+    @RequestMapping(value = PATH, method=RequestMethod.POST, params = UPLOAD_COURSES)
+    public String uploadCourses(@RequestParam("courseFile") MultipartFile multipartFile, Model model) {
         Function<File, List<Course>> courseFileFunction = file -> {
             try {
                 return courseService.processFile(file);
@@ -77,12 +85,13 @@ public class ProcessFileController {
         return uploadFile(multipartFile, 
  			   model, 
  			   courseFileFunction,
- 			   coursePersistFunction);
+ 			   coursePersistFunction,
+ 			   ERROR_COURSES);
     }
 
     /** Method to handle uploading a student file */
-    @RequestMapping(value=UPLOAD_STUDENTS_PATH, method=RequestMethod.POST, params = UPLOAD_STUDENTS)
-    public String uploadStudents(@RequestParam("file") MultipartFile multipartFile, Model model) {
+    @RequestMapping(value = PATH, method=RequestMethod.POST, params = UPLOAD_STUDENTS)
+    public String uploadStudents(@RequestParam("studentFile") MultipartFile multipartFile, Model model) {
         Function<File, List<Student>> studentFileFunction = file -> {
             try {
                 return studentService.processFile(file);
@@ -99,11 +108,12 @@ public class ProcessFileController {
         return uploadFile(multipartFile, 
     			   model, 
     			   studentFileFunction,
-    			   studentPersistFunction);
+    			   studentPersistFunction,
+    			   ERROR_STUDENTS);
     }
    
     private <T extends DomainObject> String uploadFile(MultipartFile multipartFile, Model model, 
-		Function<File, List<T>> fileFunc, Function<List<T>, List<T>> domainObjectFunc) {
+		Function<File, List<T>> fileFunc, Function<List<T>, List<T>> domainObjectFunc, String errorAttributeName) {
         if (multipartFile.isEmpty()) {
             model.addAttribute(MESSAGE, MSG_EMPTY_FILE);
         } else {    
@@ -120,7 +130,7 @@ public class ProcessFileController {
                 if (!domainObjectsWithError.isEmpty()) {
                     String errorMessage = String.format(MSG_PROCESS_FILE_ERROR, errorNumber);
                 	model.addAttribute(ERROR_MESSAGE, errorMessage);
-                	model.addAttribute(ERROR_RECORDS, domainObjectsWithError);
+                	model.addAttribute(errorAttributeName, domainObjectsWithError);
                 }
             } catch (CannotReadFileRuntimeException e) {
             	log.error(e.getMessage());
@@ -134,7 +144,7 @@ public class ProcessFileController {
         return HOME_PAGE;
     }
 
-    @RequestMapping(value = "/viewResults", method=RequestMethod.GET)
+    @RequestMapping(value = PATH, method=RequestMethod.POST, params = VIEW_RESULT)
     public String viewResults(Model model) {
     	List<Object[]> allActiveCoursesAndStudents = persistService.findAllActiveCourses();
         model.addAttribute(MESSAGE, String.format(MSG_VIEW_RESULT, allActiveCoursesAndStudents.size()));

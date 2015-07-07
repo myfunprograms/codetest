@@ -1,0 +1,52 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+	font: Arial, Helvetica, sans-serif;
+}
+
+.title {
+	font-weight:normal;
+	color:#993D00;
+	letter-spacing:1pt;
+	word-spacing:2pt;
+	font-size:30px;
+	text-align:center;
+	line-height:1;
+}
+
+.quick-nav-section {
+	float: left;
+}
+
+.message {
+	font-size:20px;
+}
+
+.errorMessage {
+	color: red;
+	font-size:20px;
+}
+
+#quick-nav {
+	border: 1px solid #CCC;
+	margin: 0 15px 15px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#quick-nav h3 {
+	border: 1px solid #FF9933;
+	margin: 0 15px 15px;
+	padding: 10px;
+	overflow: auto;
+}
+
+#quick-nav h3 {
+	background: #FFAA22; /* Old browsers */
+	background: -webkit-linear-gradient(top, #FFAA22 0%,#FFAA22 100%,#FFAA22 0%); /* Chrome10+,Safari5.1+ */
+	background: linear-gradient(to bottom, #FFAA22 0%,#FFAA22 100%,#FFAA22 0%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFAA22', endColorstr='#FFAA22',GradientType=0 ); /* IE6-9 */
+	margin: -10px -10px 10px -10px;
+	padding: 10px;
+    color: #FFFFFF;
+}
