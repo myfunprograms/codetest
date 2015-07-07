@@ -24,3 +24,6 @@ c. Test the controller
 Iteration 4. Presentation layer
 a. Implement the page
 b. Test the page
+
+Iteration 5. Integration test using Selenium
+(Didn't do this)
